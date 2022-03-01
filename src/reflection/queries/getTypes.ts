@@ -142,7 +142,10 @@ export async function getTypes(
 
     SELECT Type {
       id,
-      name,
+      name :=
+        array_join(array_agg([IS ObjectType].union_of.name), ' | ')
+        IF EXISTS [IS ObjectType].union_of
+        ELSE .name,
       is_abstract := .abstract,
 
       kind := 'object' IF Type IS ObjectType ELSE
@@ -185,7 +188,11 @@ export async function getTypes(
           is_readonly := .readonly
         } filter .name != '@source' and .name != '@target',
       } FILTER @is_owned,
-      backlinks := (SELECT DETACHED Link FILTER .target = Type) {
+      backlinks := (
+         SELECT DETACHED Link
+         FILTER .target = Type
+           AND NOT EXISTS .source[IS ObjectType].union_of
+        ) {
         real_cardinality := "AtMostOne"
           IF
           EXISTS (select .constraints filter .name = 'std::exclusive')
