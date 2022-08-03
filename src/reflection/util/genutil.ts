@@ -6,7 +6,10 @@ export function splitName(name: string) {
   if (!name.includes("::")) throw new Error(`Invalid FQN ${name}`);
   return {
     mod: name.split("::")[0],
-    name: name.split("::")[1],
+    name: name
+      .split(" | ")
+      .map(n => n.split("::")[1])
+      .join(" | "),
   };
 }
 

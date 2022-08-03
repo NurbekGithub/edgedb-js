@@ -239,9 +239,11 @@ export const generateObjectTypes = (params: GeneratorParams) => {
 
     const {module: plainTypeModule} = getPlainTypeModule(type.name);
 
-    plainTypeModule.types.set(name, getTypeName(type.name, true));
+    if (!isUnionType) {
+      plainTypeModule.types.set(name, getTypeName(type.name, true));
+    }
     plainTypeModule.buf.writeln([
-      t`export interface ${getTypeName(type.name)}${
+      t`${!isUnionType ? "export " : ""}interface ${getTypeName(type.name)}${
         type.bases.length
           ? ` extends ${type.bases
               .map(({id}) => {
