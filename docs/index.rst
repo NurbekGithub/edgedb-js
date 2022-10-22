@@ -9,8 +9,10 @@ EdgeDB TypeScript/JS Client
    :hidden:
 
    driver
-   querybuilder
    generation
+   queries
+   interfaces
+   querybuilder
    literals
    types
    funcops
@@ -31,11 +33,7 @@ or Deno backend.
 
 .. note::
 
-  We recently released ``v0.21.0`` of the ``edgedb`` module on NPM and
-  ``deno.land/x``, which supports the latest EdgeDB 2.0 features and protocol.
-  It is also backwards-compatible with v1 instances as well, so we recommend
-  all users upgrade. Read the `release notes
-  <https://github.com/edgedb/edgedb-js/releases/tag/v0.21.0>`_ for details.
+  We recently released ``v1.0.0`` of the ``edgedb`` module on NPM. This is a major version release and comes with breaking changes and major new features. Notably, the workflow for generating the query builder has changed significantly. Refer to the `release notes <https://github.com/edgedb/edgedb-js/releases>`_ for details.
 
 There are two components of this library:
 
@@ -43,7 +41,6 @@ There are two components of this library:
   to your database and execute EdgeQL queries (written as strings).
 - Use the :ref:`Query Builder API <edgedb-js-intro-qb>` to write queries in a
   code-first, typesafe way. Recommended for TypeScript users.
-
 
 .. _edgedb-js-installation:
 
@@ -72,7 +69,7 @@ There are two components of this library:
 
 *Deno users*: Import from ``deno.land/x/edgedb``:
 
-.. code-block::
+.. code-block:: typescript
 
   import * as edgedb from "https://deno.land/x/edgedb/mod.ts"
 
@@ -120,7 +117,7 @@ users and JavaScript users who prefer writing queries as code.
     id: true,
     title: true,
     actors: { name: true },
-    filter: e.op(movie.title, '=', 'Dune')
+    filter_single: {title: 'Dune'}
   }));
 
   const result = await query.run(client);
@@ -149,4 +146,4 @@ How do I get started?
 We recommend reading the :ref:`Client docs <edgedb-js-driver>` first. If you
 are happy writing your EdgeQL as plain strings, then that's all you need! If
 you're a TypeScript user, or simply prefer writing queries in a code-first
-way, continue on to the :ref:`Query builder <edgedb-js-generation>` docs.
+way, continue on to the :ref:`Query builder <edgedb-js-qb>` docs.
